@@ -1,24 +1,32 @@
 <?php
-    $contenido = file_get_contents("https://elpais.com/");
+if(isset($_POST['url'])){
+    include "Deepink.php";
+    // Ejecutar análisis
+    $web = new DeepPink($_POST['url']);
+
+    echo "<h3><strong>📘 Título:</strong><br></h3>";
+    $web->dameTitulo();
+
+    $web->dameDescripcion();
 
 
-    libxml_use_internal_errors(true); // Avoid warnings on malformed HTML
-
-    $doc = new DOMDocument();
-    $doc->loadHTML($contenido);
-
-    $titles = $doc->getElementsByTagName('title');
-    
-    foreach($titles as $valor){
-        echo $valor->textContent;
-    }
-    
-    $enlaces = $doc->getElementsByTagName('a');
-
-    foreach($enlaces as $valor){
-        echo $valor->textContent;
-        echo " - ";
-        echo $valor->getAttribute("href");
-        echo "<br>";
-    }
+    echo "<h3><br><strong>🔗 Enlaces encontrados:</strong><br><br></h3>";
+    $web->dameEnlaces();
+}
 ?>
+<!Doctype html>
+<html>
+    <head>
+       
+    </head>
+    <body>
+
+<h1>Danielcreux  deeppink</h1>
+<p>Introduce la url que quieres analizar </p>
+
+<form action="?" method="POST">
+    <input type="url" name="url">
+    <input type="submit">
+</form>
+</body>
+</html>
