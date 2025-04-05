@@ -16,6 +16,9 @@
     $enlaces = $doc->getElementsByTagName('a');
 
     foreach($enlaces as $valor){
-        echo $valor->textContent."<br>";
+        echo $valor->textContent;
+        echo " - ";
+        echo $valor->getAttribute("href");
+        echo "<br>";
     }
 ?>
