@@ -16,6 +16,6 @@
     $enlaces = $doc->getElementsByTagName('a');
 
     foreach($enlaces as $valor){
-        echo $valor->textContent;
+        echo $valor->textContent."<br>";
     }
 ?>
