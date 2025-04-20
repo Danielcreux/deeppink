@@ -7,16 +7,34 @@ class DeepPink {
 
     public function __construct($url) {
         $this->url = $url;
-        $this->contenido = @file_get_contents($url); // con @ para evitar warnings
+        $this->contenido = @file_get_contents($url);
 
         if ($this->contenido === false) {
-            echo "❌ No se pudo obtener contenido de: $url<br>";
+            throw new Exception("❌ No se pudo obtener contenido de: $url");
         } else {
             $this->doc = new DOMDocument();
             libxml_use_internal_errors(true);
             $this->doc->loadHTML($this->contenido);
             libxml_clear_errors();
         }
+    }
+
+    public function generateReport() {
+        ob_start();
+        ?>
+        <table>
+            <?php 
+            $this->dameTitulo();
+            $this->dameDescripcion();
+            $this->damePalabras();
+            $this->nubedePalabras();
+            for($i = 1; $i <= 6; $i++) {
+                $this->dameTitulos($i);
+            }
+            ?>
+        </table>
+        <?php
+        return ob_get_clean();
     }
 
     public function dameTitulo() {
