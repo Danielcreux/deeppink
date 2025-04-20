@@ -1,9 +1,19 @@
 <?php
 // index.php
+session_start();
 require_once 'db.php';
 require_once 'Deepink.php';
+require_once 'language.php';
 
-session_start();
+Language::init();
+
+if (isset($_GET['lang'])) {
+    Language::setLanguage($_GET['lang']);
+    header("Location: " . strtok($_SERVER["REQUEST_URI"], '?'));
+    exit();
+}
+
+
 $db = new Database();
 $pdo = $db->getPDO();
 
@@ -43,7 +53,7 @@ if (isset($_POST['url']) && isset($_SESSION['user_id'])) {
         $stmt = $pdo->prepare("INSERT INTO reports (user_id, url, report_html) VALUES (?, ?, ?)");
         $stmt->execute([$_SESSION['user_id'], $_POST['url'], $report_html]);
         
-        $_SESSION['message'] = "Report generated successfully!";
+       $_SESSION['message'] = Language::get('report_generated');
         header("Location: index.php?page=reports");
         exit();
     } catch (Exception $e) {
@@ -55,7 +65,7 @@ if (isset($_POST['url']) && isset($_SESSION['user_id'])) {
 if (isset($_GET['delete']) && isset($_SESSION['user_id'])) {
     $stmt = $pdo->prepare("DELETE FROM reports WHERE id = ? AND user_id = ?");
     $stmt->execute([$_GET['delete'], $_SESSION['user_id']]);
-    $_SESSION['message'] = "Report deleted successfully!";
+   $_SESSION['message'] = Language::get('report_deleted');
     header("Location: index.php?page=reports");
     exit();
 }
@@ -74,7 +84,7 @@ $current_page = isset($_GET['page']) ? $_GET['page'] : 'dashboard';
 <!DOCTYPE html>
 <html>
 <head>
-    <title>DeepPink Analysis Tool</title>
+    <title><?= Language::get('app_title') ?></title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/dashicons@9.4.0/css/dashicons.min.css" rel="stylesheet">
@@ -82,36 +92,43 @@ $current_page = isset($_GET['page']) ? $_GET['page'] : 'dashboard';
 <body id="wpwrap">
     <?php if (isset($_SESSION['user_id'])): ?>
         <div id="wpadminbar">
-            <div class="ab-item">DeepPink Analysis Tool</div>
-            <div class="ab-item">Howdy, <?= htmlspecialchars($_SESSION['name']) ?></div>
-            <a href="?logout" class="ab-item">Log Out</a>
-        </div>
+        <div class="ab-item"><?= Language::get('app_title') ?></div>
+        <div class="ab-item"><?= Language::get('welcome_user') ?>, <?= htmlspecialchars($_SESSION['name']) ?></div>
+        <div class="language-switcher">
+        <?php foreach (Language::getAllLanguages() as $lang): ?>
+            <a href="?lang=<?= $lang ?>" class="<?= (Language::getCurrentLanguage() === $lang) ? 'active' : '' ?>">
+                <?= strtoupper(substr($lang, 0, 2)) ?>
+            </a>
+        <?php endforeach; ?>
+    </div>
+    <a href="?logout" class="ab-item"><?= Language::get('logout') ?></a>
+</div>
     <?php endif; ?>
     
     <div id="wpcontent">
         <?php if (isset($_SESSION['user_id'])): ?>
-            <div id="adminmenu">
-                <ul>
-                    <li class="<?= $current_page == 'dashboard' ? 'current' : '' ?>">
-                        <a href="?page=dashboard">
-                            <span class="dashicons dashicons-dashboard"></span>
-                            Dashboard
-                        </a>
-                    </li>
-                    <li class="<?= $current_page == 'new-report' ? 'current' : '' ?>">
-                        <a href="?page=new-report">
-                            <span class="dashicons dashicons-plus-alt"></span>
-                            Create New Report
-                        </a>
-                    </li>
-                    <li class="<?= $current_page == 'reports' ? 'current' : '' ?>">
-                        <a href="?page=reports">
-                            <span class="dashicons dashicons-list-view"></span>
-                            View Reports
-                        </a>
-                    </li>
-                </ul>
-            </div>
+                    <div id="adminmenu">
+            <ul>
+                <li class="<?= $current_page == 'dashboard' ? 'current' : '' ?>">
+                    <a href="?page=dashboard">
+                        <span class="dashicons dashicons-dashboard"></span>
+                        <?= Language::get('dashboard') ?>
+                    </a>
+                </li>
+                <li class="<?= $current_page == 'new-report' ? 'current' : '' ?>">
+                    <a href="?page=new-report">
+                        <span class="dashicons dashicons-plus-alt"></span>
+                        <?= Language::get('new_report') ?>
+                    </a>
+                </li>
+                <li class="<?= $current_page == 'reports' ? 'current' : '' ?>">
+                    <a href="?page=reports">
+                        <span class="dashicons dashicons-list-view"></span>
+                        <?= Language::get('view_reports') ?>
+                    </a>
+                </li>
+            </ul>
+        </div>
         <?php endif; ?>
         
         <div id="wpbody">
@@ -129,28 +146,47 @@ $current_page = isset($_GET['page']) ? $_GET['page'] : 'dashboard';
                     </div>
                 <?php endif; ?>
                 
-                <?php if (!isset($_SESSION['user_id'])): ?>
-                    <h1>DeepPink Login</h1>
-                    <form method="POST" class="form-table">
-                        <table>
-                            <tr>
-                                <th><label for="username">Username</label></th>
-                                <td><input type="text" name="username" id="username" required></td>
-                            </tr>
-                            <tr>
-                                <th><label for="password">Password</label></th>
-                                <td><input type="password" name="password" id="password" required></td>
-                            </tr>
-                            <tr>
-                                <th></th>
-                                <td><input type="submit" name="login" value="Log In" class="button"></td>
-                            </tr>
-                        </table>
-                    </form>
-                <?php else: ?>
+               <?php if (!isset($_SESSION['user_id'])): ?>
+                <h1><?= Language::get('login_title') ?></h1>
+                <form method="POST" class="form-table">
+                    <table>
+                        <tr>
+                            <th><label for="username"><?= Language::get('username') ?></label></th>
+                            <td><input type="text" name="username" id="username" required></td>
+                        </tr>
+                        <tr>
+                            <th><label for="password"><?= Language::get('password') ?></label></th>
+                            <td><input type="password" name="password" id="password" required></td>
+                        </tr>
+                        <tr>
+            
+                        <th><label><?= Language::get('language') ?></label></th>
+                      <td class="language-switcher">
+                        <?php 
+                        $languages = Language::getAllLanguages();
+                        if (is_array($languages)): 
+                            foreach ($languages as $lang): 
+                        ?>
+                            <a href="?lang=<?= $lang ?>" class="<?= (Language::getCurrentLanguage() === $lang) ? 'active' : '' ?>">
+                                <?= strtoupper(substr($lang, 0, 2)) ?>
+                            </a>
+                        <?php 
+                            endforeach;
+                        endif; 
+                        ?>
+                    </td>
+            </tr>
+            <tr>
+                <th></th>
+                <td><input type="submit" name="login" value="<?= Language::get('login_button') ?>" class="button"></td>
+            </tr>
+        </table>
+    </form>
+<?php endif; ?>
+
                     <?php if ($current_page == 'dashboard'): ?>
-                        <h1>Dashboard</h1>
-                        <p>Welcome to DeepPink Analysis Tool. Use the navigation menu to create or view reports.</p>
+                        <h1><?= Language::get('dashboard') ?></h1>
+                        <p><?= Language::get('welcome_message') ?></p>
                         <div class="card">
                             <h2>Recent Reports</h2>
                             <?php if (empty($reports)): ?>
@@ -159,9 +195,9 @@ $current_page = isset($_GET['page']) ? $_GET['page'] : 'dashboard';
                                 <table class="wp-list-table">
                                     <thead>
                                         <tr>
-                                            <th>Date</th>
-                                            <th>URL</th>
-                                            <th>Actions</th>
+                                            <th><?= Language::get('date') ?></th>
+                                            <th><?= Language::get('url') ?></th>
+                                            <th><?= Language::get('actions') ?></th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -170,24 +206,30 @@ $current_page = isset($_GET['page']) ? $_GET['page'] : 'dashboard';
                                                 <td><?= date('Y-m-d H:i', strtotime($report['created_at'])) ?></td>
                                                 <td><?= htmlspecialchars($report['url']) ?></td>
                                                 <td>
-                                                    <span class="row-actions">
-                                                        <a href="?page=view-report&id=<?= $report['id'] ?>">View</a>
-                                                        <a href="?delete=<?= $report['id'] ?>" onclick="return confirm('Are you sure?')">Delete</a>
+                                                      <span class="row-actions">
+                                                        <a href="?page=view-report&id=<?= $report['id'] ?>">
+                                                            <?= Language::get('view') ?>
+                                                        </a>
+                                                        <a href="?delete=<?= $report['id'] ?>" 
+                                                           onclick="return confirm('<?= Language::get('confirm_delete') ?>')">
+                                                            <?= Language::get('delete') ?>
+                                                        </a>
                                                     </span>
                                                 </td>
                                             </tr>
                                         <?php endforeach; ?>
                                     </tbody>
                                 </table>
+
                             <?php endif; ?>
                         </div>
                     
                     <?php elseif ($current_page == 'new-report'): ?>
-                        <h1>Create New Report</h1>
+                        <h1><?= Language::get('new_report') ?></h1>
                         <form method="POST" class="form-table">
                             <table>
                                 <tr>
-                                    <th><label for="url">Website URL</label></th>
+                                    <th><label for="url"><?= Language::get('website_url') ?></label></th>
                                     <td>
                                         <input type="url" name="url" id="url" required placeholder="https://example.com">
                                         <p class="description">Enter the full URL including http:// or https://</p>
@@ -208,9 +250,9 @@ $current_page = isset($_GET['page']) ? $_GET['page'] : 'dashboard';
                             <table class="wp-list-table">
                                 <thead>
                                     <tr>
-                                        <th>Date</th>
-                                        <th>URL</th>
-                                        <th>Actions</th>
+                                        <th><?= Language::get('date') ?></th>
+                                        <th><?= Language::get('url') ?></th>
+                                        <th><?= Language::get('actions') ?></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -245,7 +287,7 @@ $current_page = isset($_GET['page']) ? $_GET['page'] : 'dashboard';
                             <a href="?page=reports" class="button">Back to reports</a>
                         <?php else: ?>
                             <p>Report not found.</p>
-                        <?php endif; ?>
+                     
                     <?php endif; ?>
                 <?php endif; ?>
             </div>

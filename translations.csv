@@ -1,0 +1,29 @@
+key,english,spanish,french,german
+app_title,DeepPink Analysis Tool,Herramienta DeepPink,Outil DeepPink,DeepPink Werkzeug
+login_title,Login,Iniciar sesión,Connexion,Anmeldung
+username,Username,Usuario,Nom d'utilisateur,Benutzername
+password,Password,Contraseña,Mot de passe,Passwort
+login_button,Log In,Iniciar sesión,Se connecter,Anmelden
+language,Language,Idioma,Langue,Sprache
+dashboard,Dashboard,Panel,Tableau de bord,Übersicht
+new_report,New Report,Nuevo Reporte,Nouveau Rapport,Neuer Bericht
+view_reports,View Reports,Ver Reportes,Voir Rapports,Berichte ansehen
+welcome_message,"Welcome to DeepPink Analysis Tool. Use the navigation menu to create or view reports.","Bienvenido a DeepPink. Use el menú de navegación para crear o ver reportes.","Bienvenue dans DeepPink. Utilisez le menu de navigation pour créer ou voir des rapports.","Willkommen bei DeepPink. Verwenden Sie das Navigationsmenü, um Berichte zu erstellen oder anzuzeigen."
+website_url,Website URL,URL del sitio,URL du site,Webseiten-URL
+website_title,Website Title,Título del sitio,Titre du site,Webseitentitel
+heading_tags,Heading H%s,Encabezado H%s,Titre H%s,Überschrift H%s
+description,Description,Descripción,Description,Beschreibung
+frequent_words,Frequent Words,Palabras frecuentes,Mots fréquents,Häufige Wörter
+word_cloud,Word Cloud,Nube de palabras,Nuage de mots,Wortwolke
+meta_description,Meta Description,Metadescripción,Méta-description,Meta-Beschreibung
+no_title_found,No title found,No se encontró título,Aucun titre trouvé,Kein Titel gefunden
+date,Date,Fecha,Date,Datum
+url,URL,URL,URL,URL
+actions,Actions,Acciones,Actions,Aktionen
+view,View,Ver,Voir,Ansehen
+delete,Delete,Eliminar,Supprimer,Löschen
+report_generated,Report generated,Reporte generado,Rapport généré,Bericht erstellt
+report_deleted,Report deleted,Reporte eliminado,Rapport supprimé,Bericht gelöscht
+no_reports,No reports yet,Aún no hay reportes,Aucun rapport,Keine Berichte
+create_first_report,Create first report,Crear primer reporte,Créer premier rapport,Ersten Bericht erstellen
+confirm_delete,Are you sure?,¿Estás seguro?,Êtes-vous sûr?,Sind Sie sicher?

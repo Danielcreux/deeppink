@@ -37,81 +37,87 @@ class DeepPink {
         return ob_get_clean();
     }
 
-    public function dameTitulo() {
+   public function dameTitulo() {
     $titles = $this->doc->getElementsByTagName('title');
-        echo "<tr>";
-            echo '<td>';
-             if ($titles->length > 0) { 
-                echo "<div class='ok'></div>";
-            } else {
-                echo "<div class='ko'></div>";
-            }
-            echo '</td>';
-            echo '<td>';
-            echo "<h4>Título del sitio</h4>";
-            echo '</td>';
-            echo '<td>';
-             if ($titles->length > 0) {     
-                    foreach ($titles as $valor) {
-                        echo $valor->textContent . "<br>";
-                    }
-                }  echo '</td>';
-        echo "</tr>";
-    }
-     public function dameTitulos($nivel) {
-         echo "<tr>";
-    $titles1 = $this->doc->getElementsByTagName('h'. $nivel);
+    echo "<tr>";
         echo '<td>';
-             if ($titles1->length > 0) { 
-                echo "<div class='ok'></div>";
-            } else {
-                echo "<div class='ko'></div>";
-            }
-            echo '</td>';
-            echo '<td>';
-            echo "<h4>Etiquetas de tipo H".$nivel."</h4>";
-            echo '</td>';
-            echo '<td>';
-             if ($titles1->length > 0) {     
-                    foreach ($titles1 as $valor) {
-                        echo $valor->textContent . "<br>";
-                    }
-                }  echo '</td>';
-        echo "</tr>";
-    }
-    
-   public function dameDescripcion() {
-       echo "<tr>";
-       echo '<td>';
-
-       $metaTags = $this->doc->getElementsByTagName('meta');
-        
-        foreach ($metaTags as $meta) {
-            if ($meta->getAttribute('name') === 'description') {
-                echo "<div class='ok'></div>";
-            }
+         if ($titles->length > 0) { 
+            echo "<div class='ok'></div>";
+        } else {
+            echo "<div class='ko'></div>";
         }
-
-
         echo '</td>';
-                echo '<td>';
-                echo "<h4>Descripcion del sitio</h4>";
-                echo '</td>';
-                echo '<td>';
-               $metaTags = $this->doc->getElementsByTagName('meta');
-
-                foreach ($metaTags as $meta) {
-                    if ($meta->getAttribute('name') === 'description') {
-                        echo $meta->getAttribute('content');
-                        return;
-                    }
+        echo '<td>';
+        echo "<h4>".Language::get('website_title')."</h4>";
+        echo '</td>';
+        echo '<td>';
+         if ($titles->length > 0) {     
+                foreach ($titles as $valor) {
+                    echo $valor->textContent . "<br>";
                 }
+            }  echo '</td>';
+    echo "</tr>";
+}
+
+public function dameTitulos($nivel) {
+    echo "<tr>";
+    $titles1 = $this->doc->getElementsByTagName('h'. $nivel);
+    echo '<td>';
+         if ($titles1->length > 0) { 
+            echo "<div class='ok'></div>";
+        } else {
+            echo "<div class='ko'></div>";
+        }
         echo '</td>';
-       
-       echo "<div class='ko'></div>";
-              
+        echo '<td>';
+        echo "<h4>".sprintf(Language::get('heading_tags'), $nivel)."</h4>";
+        echo '</td>';
+        echo '<td>';
+         if ($titles1->length > 0) {     
+                foreach ($titles1 as $valor) {
+                    echo $valor->textContent . "<br>";
+                }
+            }  echo '</td>';
+    echo "</tr>";
+}
+
+public function dameDescripcion() {
+    echo "<tr>";
+    echo '<td>';
+    $found = false;
+    $metaTags = $this->doc->getElementsByTagName('meta');
+    
+    foreach ($metaTags as $meta) {
+        if ($meta->getAttribute('name') === 'description') {
+            echo "<div class='ok'></div>";
+            $found = true;
+            break;
+        }
     }
     
+    if (!$found) {
+        echo "<div class='ko'></div>";
+    }
+    
+    echo '</td>';
+    echo '<td>';
+    echo "<h4>".Language::get('description')."</h4>";
+    echo '</td>';
+    echo '<td>';
+    
+    foreach ($metaTags as $meta) {
+        if ($meta->getAttribute('name') === 'description') {
+            echo $meta->getAttribute('content');
+            echo '</td>';
+            return;
+        }
+    }
+    
+    echo Language::get('no_description');
+    echo '</td>';
+    echo "</tr>";
+}
+
    public function damePalabras() {
     $stopwords = array(
         'a', 'acá', 'ahí', 'al', 'algo', 'algunas', 'algunos', 'allá', 'allí', 'ambos',
@@ -168,7 +174,7 @@ class DeepPink {
     echo !empty($wordCount) ? "<div class='ok'></div>" : "<div class='ko'></div>";
     echo '</td>';
     echo '<td>';
-    echo "<h4>Palabras más frecuentes</h4>";
+     echo "<h4>".Language::get('frequent_words')."</h4>";
     echo '</td>';
     echo '<td>';
 
@@ -238,7 +244,7 @@ class DeepPink {
     echo !empty($wordCount) ? "<div class='ok'></div>" : "<div class='ko'></div>";
     echo '</td>';
     echo '<td>';
-    echo "<h4>Palabras más frecuentes</h4>";
+    echo "<h4>".Language::get('word_cloud')."</h4>";
     echo '</td>';
     echo '<td>';
 
